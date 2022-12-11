@@ -9,14 +9,15 @@ plugins {
 
 group "dev.architectury"
 
-def isSnapshot = System.getenv("PR_NUM") != null
-def runNumber = (System.getenv("GITHUB_RUN_NUMBER") == null ? "9999" : System.getenv("GITHUB_RUN_NUMBER"))
-
-if (!isSnapshot) {
-    version = base_version + "." + runNumber
-} else {
-    version = base_version + "-PR." + System.getenv("PR_NUM") + "." + runNumber
-}
+//def isSnapshot = System.getenv("PR_NUM") != null
+//def runNumber = (System.getenv("GITHUB_RUN_NUMBER") == null ? "9999" : System.getenv("GITHUB_RUN_NUMBER"))
+//
+//if (!isSnapshot) {
+//    version = base_version + "." + runNumber
+//} else {
+//    version = base_version + "-PR." + System.getenv("PR_NUM") + "." + runNumber
+//}
+version = base_version + "-SNAPSHOT"
 
 logger.lifecycle(":building architectury transformer v${version}")
 
