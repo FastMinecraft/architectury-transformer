@@ -139,14 +139,10 @@ publishing {
         main(MavenPublication) {
             artifact(mainJar)
             artifact(sourcesJar)
-        }
-        runtime(MavenPublication) {
-            artifact(runtimeJar)
-            artifact(runtimeSourcesJar)
-        }
-        agent(MavenPublication) {
             artifact(agentJar)
             artifact(agentSourcesJar)
+            artifact(runtimeJar)
+            artifact(runtimeSourcesJar)
         }
     }
 
