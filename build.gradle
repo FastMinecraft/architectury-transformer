@@ -29,6 +29,7 @@ java {
 }
 
 repositories {
+    maven { url "https://maven.fastmc.dev/" }
     maven { url "https://maven.architectury.dev/" }
     maven { url "https://maven.fabricmc.net/" }
     mavenCentral()
@@ -56,7 +57,7 @@ license {
 }
 
 dependencies {
-    implementation "dev.architectury:tiny-remapper:1.1.0"
+    implementation "dev.architectury:tiny-remapper:1.8-SNAPSHOT"
     implementation "net.fabricmc:tiny-mappings-parser:0.2.2.14"
     implementation "org.ow2.asm:asm:9.3"
     implementation "org.ow2.asm:asm-commons:9.3"
