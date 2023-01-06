@@ -59,15 +59,16 @@ public final class SimpleTransformerContext implements TransformerContext {
         this.canModifyAssets = canModifyAssets;
         this.canAppendArgument = canAppendArgument;
         this.canAddClasses = canAddClasses;
-        this.properties = new HashMap<>();
-        for (String key : BuiltinProperties.KEYS) {
-            String value = System.getProperty(key);
-            if (value != null) {
-                this.properties.put(key, value);
-            }
-        }
         if (properties != null) {
-            this.properties.putAll(properties);
+            this.properties = properties;
+        } else {
+            this.properties = new HashMap<>();
+            for (String key : BuiltinProperties.KEYS) {
+                String value = System.getProperty(key);
+                if (value != null) {
+                    this.properties.put(key, value);
+                }
+            }
         }
         this.logger = new Logger(
             getProperty(BuiltinProperties.LOCATION, System.getProperty("user.dir")),
