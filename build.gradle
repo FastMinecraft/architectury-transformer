@@ -72,12 +72,12 @@ dependencies {
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier "sources"
+    archiveClassifier = "sources"
     from sourceSets.main.allSource
 }
 
 task agentJar(type: Jar) {
-    classifier "agent"
+    archiveClassifier = "agent"
     manifest {
         attributes(
                 "Premain-Class": "dev.architectury.transformer.agent.TransformerAgent",
@@ -90,12 +90,12 @@ task agentJar(type: Jar) {
 }
 
 task agentSourcesJar(type: Jar, dependsOn: classes) {
-    classifier "agent-sources"
+    archiveClassifier =  "agent-sources"
     from sourceSets.agent.allSource
 }
 
 task runtimeJar(type: Jar, dependsOn: shadowJar) {
-    classifier "runtime"
+    archiveClassifier =  "runtime"
     manifest {
         attributes(
                 "Main-Class": "dev.architectury.transformer.TransformerRuntime",
@@ -108,12 +108,12 @@ task runtimeJar(type: Jar, dependsOn: shadowJar) {
 }
 
 task runtimeSourcesJar(type: Jar, dependsOn: classes) {
-    classifier "runtime-sources"
+    archiveClassifier =  "runtime-sources"
     from sourceSets.runtime.allSource
 }
 
 jar {
-    classifier "raw"
+    archiveClassifier =  "raw"
 }
 
 shadowJar {
@@ -127,7 +127,7 @@ shadowJar {
     relocate "dev.architectury.tinyremapper", "dev.architectury.transformer.shadowed.impl.dev.architectury.tinyremapper"
     relocate "dev.architectury.refmapremapper", "dev.architectury.transformer.shadowed.impl.dev.architectury.refmapremapper"
     configurations = [project.configurations.runtimeClasspath]
-    classifier "shadow"
+    archiveClassifier =  "shadow"
 }
 
 task mainJar(type: Jar, dependsOn: shadowJar) {
