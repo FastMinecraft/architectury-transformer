@@ -51,7 +51,7 @@ public class TransformForgeEnvironment implements TinyRemapperTransformer {
             List<IMappingProvider> providers = mapMixin(context);
             providers.add(remapEnvironment());
             return providers;
-        } else return new ArrayList<>(Collections.singletonList(remapEnvironment()))
+        } else return new ArrayList<>(Collections.singletonList(remapEnvironment()));
     }
     
     private IMappingProvider remapEnvironment() {

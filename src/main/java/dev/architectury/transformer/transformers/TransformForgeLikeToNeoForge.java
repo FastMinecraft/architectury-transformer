@@ -26,6 +26,7 @@ package dev.architectury.transformer.transformers;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.architectury.transformer.transformers.base.ClassEditTransformer;
+import dev.architectury.transformer.transformers.base.edit.TransformerContext;
 import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.commons.Remapper;
 import org.objectweb.asm.tree.ClassNode;
@@ -57,7 +58,7 @@ public class TransformForgeLikeToNeoForge implements ClassEditTransformer {
     }
     
     @Override
-    public ClassNode doEdit(String name, ClassNode node) {
+    public ClassNode doEdit(TransformerContext context, String name, ClassNode node) {
         ClassNode newNode = new ClassNode();
         node.accept(new ClassRemapper(newNode, new Remapper() {
             @Override

@@ -25,6 +25,7 @@ package dev.architectury.transformer.transformers;
 
 import dev.architectury.tinyremapper.IMappingProvider;
 import dev.architectury.transformer.transformers.base.TinyRemapperTransformer;
+import dev.architectury.transformer.transformers.base.edit.TransformerContext;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ import java.util.List;
 
 public class TransformNeoForgeEnvironment implements TinyRemapperTransformer {
     @Override
-    public List<IMappingProvider> collectMappings() throws Exception {
+    public List<IMappingProvider> collectMappings(TransformerContext context) throws Exception {
         return new ArrayList<>(Collections.singletonList(remapEnvironment()));
     }
     

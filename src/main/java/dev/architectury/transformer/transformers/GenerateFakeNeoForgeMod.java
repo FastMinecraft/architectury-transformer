@@ -50,7 +50,7 @@ public class GenerateFakeNeoForgeMod extends AbstractFakeMod {
                         "[[mods]]\n" +
                         "modId = \"" + fakeModId + "\"\n");
         output.addFile("pack.mcmeta",
-                "{\"pack\":{\"description\":\"Generated\",\"pack_format\":" + System.getProperty(BuiltinProperties.MCMETA_VERSION, "4") + "}}");
+                "{\"pack\":{\"description\":\"Generated\",\"pack_format\":" + context.getProperty(BuiltinProperties.MCMETA_VERSION, "4") + "}}");
         output.addFile("generated" + fakeModId + "/" + fakeModId + ".class", generateClass(fakeModId));
     }
     

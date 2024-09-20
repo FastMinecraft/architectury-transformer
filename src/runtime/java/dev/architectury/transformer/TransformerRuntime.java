@@ -139,7 +139,7 @@ public class TransformerRuntime {
             }
         }
         List<Map.Entry<Path, PathWithTransformersEntry>> tmpJars = new ArrayList<>();
-        classpathProvider = ReadClasspathProvider.of(ClasspathProvider.fromProperties().filter(path -> {
+        classpathProvider = ReadClasspathProvider.of(logger, ClasspathProvider.fromProperties(System.getProperty(BuiltinProperties.COMPILE_CLASSPATH, "true")).filter(path -> {
             File file = path.toFile().getAbsoluteFile();
             for (PathWithTransformersEntry path1 : toTransform) {
                 if (Objects.equals(path1.toFile().getAbsoluteFile(), file)) {
@@ -212,7 +212,7 @@ public class TransformerRuntime {
         for (Map.Entry<Path, PathWithTransformersEntry> tmpJar : tmpJars) {
             cp.add(tmpJar.getKey().toAbsolutePath().toString());
         }
-        removeDuplicates(cp, tmpJars);
+        removeDuplicates(logger, cp, tmpJars);
         System.setProperty("java.class.path", String.join(File.pathSeparator, cp));
         
         Path mainClassPath = Paths.get(System.getProperty(MAIN_CLASS));
@@ -221,10 +221,10 @@ public class TransformerRuntime {
         handle.invokeExact((String[]) argsList.toArray(new String[0]));
     }
     
-    private static void removeDuplicates(List<String> cpList, List<Map.Entry<Path, PathWithTransformersEntry>> tmpJars) throws IOException {
+    private static void removeDuplicates(Logger logger, List<String> cpList, List<Map.Entry<Path, PathWithTransformersEntry>> tmpJars) throws IOException {
         List<Set<String>> tmpModules = new ArrayList<>();
         for (Map.Entry<Path, PathWithTransformersEntry> tmpJar : tmpJars) {
-            try (OpenedFileAccess og = OpenedFileAccess.ofJar(tmpJar.getValue().path)) {
+            try (OpenedFileAccess og = OpenedFileAccess.ofJar(logger, tmpJar.getValue().path)) {
                 Set<String> modules = new HashSet<>();
                 og.handle(path -> {
                     if (path.endsWith(".class")) {
@@ -234,7 +234,7 @@ public class TransformerRuntime {
                     }
                 });
                 tmpModules.add(modules);
-                Logger.debug("Temporary jar [%s] contains packages: %s", tmpJar.getKey(), String.join(", ", modules));
+                logger.debug("Temporary jar [%s] contains packages: %s", tmpJar.getKey(), String.join(", ", modules));
             }
         }
 
@@ -252,13 +252,13 @@ public class TransformerRuntime {
                                 modules.add(packageName);
                             }
                         });
-                        Logger.debug("Classpath entry [%s] contains packages: %s", cp, String.join(", ", modules));
+                        logger.debug("Classpath entry [%s] contains packages: %s", cp, String.join(", ", modules));
                         if (modules.isEmpty()) {
                             return false;
                         }
                         for (Set<String> module : tmpModules) {
                             if (module.equals(modules)) {
-                                Logger.info("Removing duplicate classpath entry: " + cp);
+                                logger.info("Removing duplicate classpath entry: " + cp);
                                 return true;
                             }
                         }

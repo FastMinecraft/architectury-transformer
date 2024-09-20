@@ -56,7 +56,7 @@ public class FixForgeMixin implements AssetEditTransformer {
     
     @Override
     public void doEdit(TransformerContext context, FileAccess output) throws Exception {
-        String productionNamespace = System.getProperty(BuiltinProperties.FORGE_PRODUCTION_NAMESPACE, "srg");
+        String productionNamespace = context.getProperty(BuiltinProperties.FORGE_PRODUCTION_NAMESPACE, "srg");
         Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         List<String> mixinConfigs = new ArrayList<>();
         String refmap = context.getProperty(BuiltinProperties.REFMAP_NAME);
