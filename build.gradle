@@ -29,7 +29,7 @@ java {
 }
 
 repositories {
-    maven { url "https://maven.fastmc.dev/" }
+    maven { url "https://maven.luna5ama.dev/" }
     maven { url "https://maven.architectury.dev/" }
     maven { url "https://maven.fabricmc.net/" }
     mavenCentral()
