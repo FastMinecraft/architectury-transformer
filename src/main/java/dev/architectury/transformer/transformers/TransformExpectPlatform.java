@@ -30,7 +30,7 @@ import dev.architectury.transformer.input.FileAccess;
 import dev.architectury.transformer.transformers.base.AssetEditTransformer;
 import dev.architectury.transformer.transformers.base.ClassEditTransformer;
 import dev.architectury.transformer.transformers.base.edit.TransformerContext;
-import dev.architectury.transformer.util.Logger;
+import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -43,10 +43,13 @@ import java.util.Objects;
 import static dev.architectury.transformer.transformers.RemapInjectables.getUniqueIdentifier;
 
 public class TransformExpectPlatform implements AssetEditTransformer, ClassEditTransformer {
+    private String platformPackage = null;
     private String uniqueIdentifier = null;
     
     @Override
     public void supplyProperties(JsonObject json) {
+        platformPackage = json.has(BuiltinProperties.PLATFORM_PACKAGE) ?
+                json.getAsJsonPrimitive(BuiltinProperties.PLATFORM_PACKAGE).getAsString() : null;
         uniqueIdentifier = json.has(BuiltinProperties.UNIQUE_IDENTIFIER) ?
                 json.getAsJsonPrimitive(BuiltinProperties.UNIQUE_IDENTIFIER).getAsString() : null;
     }
@@ -109,7 +112,7 @@ public class TransformExpectPlatform implements AssetEditTransformer, ClassEditT
                         stackIndex += argumentType.getSize();
                     }
                     
-                    method.instructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getPlatformClass(context, node.name), method.name, method.desc));
+                    method.instructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getPlatformClass(context, platformPackage, node.name), method.name, method.desc));
                     method.instructions.add(new InsnNode(type.getReturnType().getOpcode(Opcodes.IRETURN)));
                     
                     method.maxStack = -1;
@@ -124,10 +127,17 @@ public class TransformExpectPlatform implements AssetEditTransformer, ClassEditT
         return node;
     }
     
-    private static String getPlatformClass(TransformerContext context, String lookupClass) {
-        String platform = context.getProperty(BuiltinProperties.PLATFORM_NAME);
-        Preconditions.checkNotNull(platform, BuiltinProperties.PLATFORM_NAME + " is not present!");
-        if (platform.equals("quilt")) platform = "fabric";
+    private static String getPlatformClass(TransformerContext context, @Nullable String platformPackage, String lookupClass) {
+        String platform = platformPackage;
+        if (platform == null) {
+            platform = context.getProperty(BuiltinProperties.PLATFORM_PACKAGE);
+        }
+        if (platform == null) {
+            platform = context.getProperty(BuiltinProperties.PLATFORM_NAME);
+            Preconditions.checkNotNull(platform, BuiltinProperties.PLATFORM_NAME + " is not present!");
+            if (platform.equals("quilt")) platform = "fabric";
+        }
+
         String lookupType = lookupClass.replace("$", "") + "Impl";
         
         return lookupType.substring(0, lookupType.lastIndexOf('/')) + "/" + platform + "/" +

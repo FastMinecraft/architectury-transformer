@@ -57,14 +57,12 @@ license {
 }
 
 dependencies {
-    implementation "dev.architectury:tiny-remapper:1.8-SNAPSHOT"
-    implementation "it.unimi.dsi:fastutil:7.1.0"
-
+    implementation "dev.architectury:tiny-remapper:1.1.0"
     implementation "net.fabricmc:tiny-mappings-parser:0.2.2.14"
-    implementation "org.ow2.asm:asm:9.3"
-    implementation "org.ow2.asm:asm-commons:9.3"
-    implementation "org.ow2.asm:asm-tree:9.3"
-    implementation "org.ow2.asm:asm-util:9.3"
+    implementation "org.ow2.asm:asm:9.6"
+    implementation "org.ow2.asm:asm-commons:9.6"
+    implementation "org.ow2.asm:asm-tree:9.6"
+    implementation "org.ow2.asm:asm-util:9.6"
     implementation "com.google.guava:guava:29.0-jre"
     implementation "com.google.code.gson:gson:2.8.5"
     implementation "dev.architectury:refmap-remapper:1.0.5"
@@ -83,7 +81,8 @@ task agentJar(type: Jar) {
                 "Premain-Class": "dev.architectury.transformer.agent.TransformerAgent",
                 "Agent-Class": "dev.architectury.transformer.agent.TransformerAgent",
                 "Can-Redefine-Classes": true,
-                "Can-Retransform-Classes": true
+                "Can-Retransform-Classes": true,
+                "Automatic-Module-Name": "dev.architectury.transformer.agent"
         )
     }
     from sourceSets.agent.output
@@ -99,7 +98,8 @@ task runtimeJar(type: Jar, dependsOn: shadowJar) {
     manifest {
         attributes(
                 "Main-Class": "dev.architectury.transformer.TransformerRuntime",
-                "Implementation-Version": project.version
+                "Implementation-Version": project.version,
+                "Automatic-Module-Name": "dev.architectury.transformer.runtime"
         )
     }
     from {
@@ -128,6 +128,7 @@ shadowJar {
     relocate "dev.architectury.refmapremapper", "dev.architectury.transformer.shadowed.impl.dev.architectury.refmapremapper"
     configurations = [project.configurations.runtimeClasspath]
     archiveClassifier =  "shadow"
+    exclude "module-info.class"
 }
 
 task mainJar(type: Jar, dependsOn: shadowJar) {

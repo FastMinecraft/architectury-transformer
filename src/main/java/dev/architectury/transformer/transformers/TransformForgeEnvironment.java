@@ -43,12 +43,15 @@ import java.util.*;
 public class TransformForgeEnvironment implements TinyRemapperTransformer {
     private TinyTree srg;
     private Map<String, IMappingProvider> mixinMappingCache = new HashMap<>();
-    
+
     @Override
     public List<IMappingProvider> collectMappings(TransformerContext context) throws Exception {
-        List<IMappingProvider> providers = mapMixin(context);
-        providers.add(remapEnvironment());
-        return providers;
+        boolean fixMixins = context.getProperty(BuiltinProperties.FORGE_FIX_MIXINS, "true").equals("true");
+        if (fixMixins) {
+            List<IMappingProvider> providers = mapMixin(context);
+            providers.add(remapEnvironment());
+            return providers;
+        } else return new ArrayList<>(Collections.singletonList(remapEnvironment()))
     }
     
     private IMappingProvider remapEnvironment() {
@@ -66,6 +69,7 @@ public class TransformForgeEnvironment implements TinyRemapperTransformer {
     }
     
     private List<IMappingProvider> mapMixin(TransformerContext context) throws IOException {
+        String productionNamespace = context.getProperty(BuiltinProperties.FORGE_PRODUCTION_NAMESPACE, "srg");
         List<IMappingProvider> providers = new ArrayList<>();
         
         if (srg == null) {
@@ -87,7 +91,7 @@ public class TransformForgeEnvironment implements TinyRemapperTransformer {
                                     .stream()
                                     .filter(it -> Objects.equals(it.getName("intermediary"), dstName))
                                     .findFirst()
-                                    .map(it -> it.getName("srg"))
+                                    .map(it -> it.getName(productionNamespace))
                                     .orElse(dstName);
                             sink.acceptClass(srcName, srgName);
                             context.getLogger().debug("Remap mixin class %s -> %s", srcName, srgName);
@@ -100,7 +104,7 @@ public class TransformForgeEnvironment implements TinyRemapperTransformer {
                                     .flatMap(it -> it.getMethods().stream())
                                     .filter(it -> Objects.equals(it.getName("intermediary"), dstName))
                                     .findFirst()
-                                    .map(it -> it.getName("srg"))
+                                    .map(it -> it.getName(productionNamespace))
                                     .orElse(dstName);
                             sink.acceptMethod(method, srgName);
                             context.getLogger().debug("Remap mixin method %s#%s%s -> %s", method.owner, method.name, method.desc, srgName);
@@ -113,7 +117,7 @@ public class TransformForgeEnvironment implements TinyRemapperTransformer {
                                     .flatMap(it -> it.getFields().stream())
                                     .filter(it -> Objects.equals(it.getName("intermediary"), dstName))
                                     .findFirst()
-                                    .map(it -> it.getName("srg"))
+                                    .map(it -> it.getName(productionNamespace))
                                     .orElse(dstName);
                             sink.acceptField(field, srgName);
                             context.getLogger().debug("Remap mixin field %s#%s:%s -> %s", field.owner, field.name, field.desc, srgName);

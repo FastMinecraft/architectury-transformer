@@ -35,6 +35,10 @@ public class BuiltinProperties {
     public static final String REFMAP_NAME = "architectury.refmap.name";
     public static final String MCMETA_VERSION = "architectury.mcmeta.version";
     public static final String PLATFORM_NAME = "architectury.platform.name";
+    public static final String PLATFORM_PACKAGE = "architectury.platform.package";
+    public static final String FORGE_PRODUCTION_NAMESPACE = "architectury.forge.production_namespace";
+    public static final String FORGE_FIX_MIXINS = "architectury.forge.fix_mixins";
+    public static final String NEOFORGE_LIKE_REMAPS = "architectury.neoforge.forgelike_remaps";
 
     public static final String[] KEYS = new String[]{
         VERBOSE,
@@ -47,6 +51,10 @@ public class BuiltinProperties {
         MAPPINGS_WITH_SRG,
         REFMAP_NAME,
         MCMETA_VERSION,
-        PLATFORM_NAME
+        PLATFORM_NAME,
+        PLATFORM_PACKAGE,
+        FORGE_PRODUCTION_NAMESPACE,
+        FORGE_FIX_MIXINS,
+        NEOFORGE_LIKE_REMAPS
     };
 }
